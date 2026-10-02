@@ -14,3 +14,31 @@ test('verify valid OrangeHRM login', async ({ page }) => {
     await expect(dashboardPage.dashboardText).toBeVisible();
 
 });
+
+test('verify login with invalid username', async ({ page }) => {
+
+    await page.goto('https://opensource-demo.orangehrmlive.com/');
+
+    const loginPage = new LoginPage(page);
+
+    await loginPage.login('WrongUser', 'admin123');
+
+    await expect(
+        page.getByText('Invalid credentials')
+    ).toBeVisible();
+
+});
+
+test('verify login with invalid password', async ({ page }) => {
+
+    await page.goto('https://opensource-demo.orangehrmlive.com/');
+
+    const loginPage = new LoginPage(page);
+
+    await loginPage.login('Admin', 'WrongPassword');
+
+    await expect(
+        page.getByText('Invalid credentials')
+    ).toBeVisible();
+
+});
