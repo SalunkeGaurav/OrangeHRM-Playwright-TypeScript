@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
-import { DashboardPage } from '../pages/DashboardPage';
 
 test('verify valid OrangeHRM login', async ({ page }) => {
 
@@ -10,9 +9,8 @@ test('verify valid OrangeHRM login', async ({ page }) => {
 
     await expect(loginPage.loginButton).toBeVisible();
 
-    await loginPage.login('Admin', 'admin123');
+    const dashboardPage = await loginPage.login('Admin', 'admin123');
 
-    const dashboardPage = new DashboardPage(page);
     await expect(dashboardPage.dashboardText).toBeVisible();
 
 });
