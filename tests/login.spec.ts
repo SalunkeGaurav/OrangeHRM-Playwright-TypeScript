@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
+import { invalidLoginData } from '../test-data/loginData';
 
 test('verify valid OrangeHRM login', async ({ page }) => {
 
-    await page.goto('https://opensource-demo.orangehrmlive.com/');
+    await page.goto('/');
 
     const loginPage = new LoginPage(page);
 
@@ -15,30 +16,20 @@ test('verify valid OrangeHRM login', async ({ page }) => {
 
 });
 
-test('verify login with invalid username', async ({ page }) => {
 
-    await page.goto('https://opensource-demo.orangehrmlive.com/');
+for (const data of invalidLoginData) {
 
-    const loginPage = new LoginPage(page);
+    test(`invalid login - ${data.username}`, async ({ page }) => {
 
-    await loginPage.login('WrongUser', 'admin123');
+        await page.goto('/');
 
-    await expect(
-        page.getByText('Invalid credentials')
-    ).toBeVisible();
+        const loginPage = new LoginPage(page);
 
-});
+        await loginPage.login(data.username, data.password);
 
-test('verify login with invalid password', async ({ page }) => {
+        await expect(
+            page.getByText('Invalid credentials')
+        ).toBeVisible();
 
-    await page.goto('https://opensource-demo.orangehrmlive.com/');
-
-    const loginPage = new LoginPage(page);
-
-    await loginPage.login('Admin', 'WrongPassword');
-
-    await expect(
-        page.getByText('Invalid credentials')
-    ).toBeVisible();
-
-});
+    });
+}
