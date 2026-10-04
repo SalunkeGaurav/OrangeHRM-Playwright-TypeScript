@@ -1,12 +1,8 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
+import { test } from '../fixtures/test';
+import { expect } from '@playwright/test';
 import { invalidLoginData } from '../test-data/loginData';
 
-test('verify valid OrangeHRM login', async ({ page }) => {
-
-    await page.goto('/');
-
-    const loginPage = new LoginPage(page);
+test('verify valid OrangeHRM login', async ({ loginPage }) => {
 
     await expect(loginPage.loginButton).toBeVisible();
 
@@ -16,20 +12,13 @@ test('verify valid OrangeHRM login', async ({ page }) => {
 
 });
 
-
 for (const data of invalidLoginData) {
 
-    test(`invalid login - ${data.username}`, async ({ page }) => {
-
-        await page.goto('/');
-
-        const loginPage = new LoginPage(page);
+    test(`invalid login - ${data.username}`, async ({ loginPage, page }) => {
 
         await loginPage.login(data.username, data.password);
 
-        await expect(
-            page.getByText('Invalid credentials')
-        ).toBeVisible();
+        await expect(loginPage.invalidCredentialsMessage).toBeVisible();
 
     });
 }

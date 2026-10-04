@@ -5,11 +5,13 @@ export class LoginPage {
     usernameInput;
     passwordInput;
     loginButton;
+    invalidCredentialsMessage;
 
     constructor(private page: Page) {
         this.usernameInput = page.locator('input[name="username"]');
         this.passwordInput = page.locator('input[name="password"]');
         this.loginButton = page.locator('button[type="submit"]');
+        this.invalidCredentialsMessage = page.getByText('Invalid credentials');
     }
 
     async login(username: string, password: string): Promise<DashboardPage> {
