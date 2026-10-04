@@ -6,7 +6,8 @@ test('verify valid OrangeHRM login', async ({ loginPage }) => {
 
     await expect(loginPage.loginButton).toBeVisible();
 
-    const dashboardPage = await loginPage.login('Admin', 'admin123');
+    const dashboardPage = await loginPage.login(process.env.ORANGEHRM_USERNAME!, process.env.ORANGEHRM_PASSWORD!
+);
 
     await expect(dashboardPage.dashboardText).toBeVisible();
 

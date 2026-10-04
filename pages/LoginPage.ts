@@ -1,11 +1,11 @@
-import { Page } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 import { DashboardPage } from './DashboardPage';
 
 export class LoginPage {
-    usernameInput;
-    passwordInput;
-    loginButton;
-    invalidCredentialsMessage;
+    usernameInput: Locator;
+    passwordInput: Locator;
+    loginButton: Locator;
+    invalidCredentialsMessage: Locator;
 
     constructor(private page: Page) {
         this.usernameInput = page.locator('input[name="username"]');
