@@ -1,7 +1,7 @@
 
-import { test } from '../fixtures/test';
+import { test } from '../../fixtures/test';
 import { expect } from '@playwright/test';
-import { createEmployeeData } from '../test-data/employeeData';
+import { createEmployeeData } from '../../test-data/employeeData';
 import process from 'process';
 
 test('create employee and verify in employee list', async ({ loginPage, page }) => {
