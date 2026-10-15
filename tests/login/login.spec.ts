@@ -1,6 +1,6 @@
-import { test } from '../fixtures/test';
+import { test } from '../../fixtures/test';
 import { expect } from '@playwright/test';
-import { invalidLoginData } from '../test-data/loginData';
+import { invalidLoginData } from '../../test-data/loginData';
 
 test('verify valid OrangeHRM login', async ({ loginPage }) => {
 
