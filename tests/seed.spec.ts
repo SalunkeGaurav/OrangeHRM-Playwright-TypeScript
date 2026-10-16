@@ -1,7 +1,6 @@
-
 import { test } from '../fixtures/test';
 
-test('seed', async ({ page }) => {
-  // The loginPage fixture navigates to the base URL.
-  // This seed gives the AI agent a consistent starting point.
+test('agent seed: open the configured application start page', async ({ loginPage }) => {
+  // Requesting loginPage runs the shared fixture, which navigates to BASE_URL.
+  // Planner and generator setup use this file as their browser starting point.
 });

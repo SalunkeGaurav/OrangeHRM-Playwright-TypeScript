@@ -15,6 +15,8 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
+  // This file is retained as a starting point for the AI test generator.
+  testIgnore: process.env.PLAYWRIGHT_AGENT_SEED === 'true' ? [] : ['**/seed.spec.ts'],
   timeout: 90000,
   
   expect: {
