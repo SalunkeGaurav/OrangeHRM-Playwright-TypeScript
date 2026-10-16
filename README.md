@@ -1,153 +1,147 @@
-# OrangeHRM Playwright Automation
+# OrangeHRM UI Test Automation
 
-A UI test automation portfolio project for OrangeHRM built with **Playwright Test and TypeScript**. It demonstrates the Page Object Model (POM), custom fixtures, environment-based configuration, login validation, employee workflows, and AI-assisted test planning and generation.
+A UI test automation portfolio project built with **Playwright Test and TypeScript**. It demonstrates the Page Object Model (POM), reusable fixtures, test data management, environment-based configuration, and GitHub Actions CI.
 
-> **Scope:** This project tests the public OrangeHRM demo. It is a learning/portfolio project, not a production test suite. The demo is shared and may be slow or temporarily unavailable.
+**Scope:** This is a learning and portfolio project that tests an OrangeHRM instance. It is not a production test suite. The public demo is shared and may be slow or temporarily unavailable.
 
-## Coverage
+## Test Coverage
 
 ### Login and password recovery
-- Successful login and invalid-credential validation (existing tests)
-- Required-field validation for empty username, empty password, and both fields empty
-- Navigation to and cancellation from the password-recovery page
+- Successful login and invalid-credential validation
+- Required-field validation for empty username and password combinations
+- Password-recovery page navigation and cancellation
 - Required-username validation on the password-recovery page
 
-### Employee workflows
-- Employee creation
-- Employee search
-- Employee first-name update
-- Employee deletion
+Password-recovery tests cover navigation and form validation. They do not verify email delivery or successful account recovery.
 
-The password-recovery tests verify navigation and client-side required-field validation. They do **not** verify email delivery or successful account recovery.
+### Employee management (PIM)
+- Create an employee
+- Search for an employee
+- Update an employee's first name and verify the result
+- Delete an employee and verify the success message
 
-## Tech stack
+Employee tests change demo data. Run them only against an instance where you are authorized to perform these actions.
+
+## Technology
 
 - TypeScript and Node.js
 - Playwright Test
 - Page Object Model (POM)
 - Custom Playwright fixtures
-- Environment variables with dotenv
+- dotenv for environment configuration
+- Faker for generated employee data
 - GitHub Actions for continuous integration
-- Playwright MCP agent configurations for AI-assisted test planning, test generation, and test failure investigation
+- Codex/Playwright MCP agent configurations for exploring AI-assisted testing workflows
 
-## Project structure
+## Project Structure
 
 ```text
-.
-├── .codex/
-│   └── agents/
-│       ├── playwright_test_generator.toml
-│       ├── playwright_test_healer.toml
-│       └── playwright_test_planner.toml
-├── .github/
-│   └── workflows/
-│       └── playwright.yml
-├── fixtures/
-│   └── test.ts
-├── pages/
-│   ├── AddEmployeePage.ts
-│   ├── DashboardPage.ts
-│   ├── EmployeeDetailsPage.ts
-│   ├── EmployeeListPage.ts
-│   ├── LoginPage.ts
-│   └── PIMPage.ts
-├── specs/
-│   ├── README.md
-│   └── login-test-plan.md
-├── test-data/
-├── tests/
-│   ├── employee/
-│   │   └── employee.spec.ts
-│   ├── login/
-│   │   ├── empty-credentials.spec.ts
-│   │   ├── empty-password.spec.ts
-│   │   ├── empty-username.spec.ts
-│   │   ├── login.spec.ts
-│   │   ├── password-reset-empty-username.spec.ts
-│   │   └── password-reset-navigation.spec.ts
-│   └── seed.spec.ts
-├── .env.example
-├── .gitignore
-├── package.json
-├── package-lock.json
-├── playwright.config.ts
-└── tsconfig.json
+.codex/agents/       AI test planner, generator, and healer configurations
+.github/workflows/   GitHub Actions workflow
+fixtures/            Shared Playwright fixtures
+pages/               Login, dashboard, PIM, and employee page objects
+specs/               Test plans and documentation
+test-data/           Login cases and generated employee data
+tests/login/         Login and password-recovery tests
+tests/employee/      Employee management tests
+tests/seed.spec.ts   AI-generation seed file; excluded from normal test runs
+.env.example         Environment variable template
+playwright.config.ts Playwright configuration
+package.json         Dependencies and npm scripts
 ```
 
 ## Prerequisites
 
-- A current Node.js LTS release
+- Node.js LTS with npm
 - Git
+- Access to an OrangeHRM instance and credentials you are authorized to use
 
-## Setup
+## Setup on Windows
 
-1. Clone the repository and enter the project directory:
+Clone the repository and install dependencies:
 
-   ```bash
-   git clone https://github.com/SalunkeGaurav/OrangeHRM-Playwright-TypeScript.git
-   cd OrangeHRM-Playwright-TypeScript
-   npm ci
-   npx playwright install chromium
-   ```
+```powershell
+git clone https://github.com/SalunkeGaurav/OrangeHRM-Playwright-TypeScript.git
+Set-Location OrangeHRM-Playwright-TypeScript
+npm ci
+npx playwright install chromium
+Copy-Item .env.example .env
+```
 
-2. Create a `.env` file in the project root using `.env.example` as a template:
+Edit `.env` and provide the URL and credentials for your test instance:
 
-   ```env
-   BASE_URL=https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
-   ORANGEHRM_USERNAME=your_username
-   ORANGEHRM_PASSWORD=your_password
-   ```
+```dotenv
+BASE_URL=https://your-orangehrm-instance.example/web/index.php/auth/login
+ORANGEHRM_USERNAME=your_username
+ORANGEHRM_PASSWORD=your_password
+```
 
-   Use credentials you are authorized to use. Do not commit `.env` or real credentials. The public demo's availability and credentials can change.
+The repository's `.env.example` contains blank placeholders. Keep real credentials in `.env` or a secrets manager; never commit them. The project does not provide credentials or guarantee that a particular OrangeHRM instance is available.
 
-## Run tests
+## Running Tests
 
-Run the full suite sequentially:
+Run the suite:
 
-```bash
+```powershell
 npm test
 ```
 
 Run tests with a visible browser:
 
-```bash
+```powershell
 npm run test:headed
 ```
 
-Run a specific test file:
+Run an individual test file:
 
-```bash
-npx playwright test tests/login/login.spec.ts
-npx playwright test tests/login/empty-credentials.spec.ts
-npx playwright test tests/employee/employee.spec.ts
+```powershell
+npx playwright test tests/login/login.spec.ts --workers=1
 ```
 
 Open the HTML report after a test run:
 
-```bash
+```powershell
 npm run test:report
 ```
 
-## Configuration and CI
+The report command expects a report generated by a previous test run.
 
-- `playwright.config.ts` loads environment variables using dotenv and configures Chromium.
-- `BASE_URL`, `ORANGEHRM_USERNAME`, and `ORANGEHRM_PASSWORD` are read from environment variables.
-- GitHub Actions runs the suite for pushes and pull requests targeting `main` or `master`. Configure the corresponding repository Actions secrets if your workflow requires them.
-- The workflow uploads the Playwright HTML report as an artifact after a run.
+## How the Tests Are Organized
 
-## AI-assisted test workflow
+- `fixtures/test.ts` provides a reusable `loginPage` fixture and navigates to the configured base URL.
+- Classes in `pages/` encapsulate locators and common page actions.
+- Test scenarios in `tests/` use Playwright assertions to verify page state, validation messages, search results, and operation feedback.
+- `test-data/loginData.ts` contains invalid login combinations.
+- `test-data/employeeData.ts` uses Faker to generate employee names.
 
-The `.codex/agents/` directory contains configurations for three Playwright MCP agents:
+## Continuous Integration
 
-- **Planner:** explores the application and saves test plans.
-- **Generator:** uses a test plan and browser observations to help generate Playwright tests.
-- **Healer:** investigates failing tests and attempts targeted fixes, followed by verification.
+The GitHub Actions workflow in `.github/workflows/playwright.yml` runs on pushes and pull requests targeting `main` or `master`. It installs Node.js, dependencies, and Playwright browsers, then runs the test suite.
 
-The current additional scenarios are documented in [`specs/login-test-plan.md`](specs/login-test-plan.md). These configurations provide AI-assisted workflows; they do not guarantee autonomous or self-healing tests. Review generated changes and rerun the suite before accepting them. Agent use requires a compatible Codex/MCP setup.
+The workflow reads `BASE_URL`, `ORANGEHRM_USERNAME`, and `ORANGEHRM_PASSWORD` from repository Actions secrets and uploads the Playwright HTML report as an artifact. Configure the required secrets before expecting authenticated tests to pass in CI.
 
-## Notes and limitations
+Only Chromium is enabled as a Playwright project in the current configuration.
 
-- The public OrangeHRM demo is a shared environment; network issues, changes to the site, and concurrent use can affect results.
-- Employee tests create, update, and delete demo records. Run them only against an environment where you have permission to perform these actions.
-- Password recovery is not tested end-to-end because submitting a real account recovery request can trigger an external flow.
-- When a test fails, inspect the error and Playwright trace before changing timeouts or selectors.
+## AI-Assisted Testing
+
+The `.codex/agents/` directory contains configurations for:
+- **Planner:** explores the application and documents test scenarios.
+- **Generator:** uses test plans and browser observations to help create tests.
+- **Healer:** investigates test failures and proposes targeted fixes.
+
+The additional login scenarios are documented in [`specs/login-test-plan.md`](specs/login-test-plan.md). These configurations describe an AI-assisted workflow; their presence alone does not prove that every agent workflow has been run or verified. Review generated changes and rerun tests before accepting them.
+
+The seed file is excluded from normal test discovery because it is not a functional test.
+
+## Limitations
+
+- Tests depend on the configured OrangeHRM instance and its availability.
+- Shared demo data and concurrent usage can affect employee tests.
+- Valid-login and employee scenarios require working credentials.
+- CI does not provision an OrangeHRM environment.
+- Password recovery is not tested end-to-end.
+- AI-generated changes require human review and test verification.
+
+## Skills Demonstrated
+
+Playwright end-to-end testing, TypeScript, Page Object Model, reusable fixtures, test data management, UI assertions, environment-based configuration, Git, and GitHub Actions CI.
